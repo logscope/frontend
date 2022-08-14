@@ -1,0 +1,12 @@
+monitor M1c {
+  event command, succeed
+
+  always {
+    command => Succeed
+  }
+
+  hot Succeed {
+    succeed => ok
+    command => error
+  }
+}

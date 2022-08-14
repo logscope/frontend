@@ -1,0 +1,14 @@
+
+monitor CommandsMustSucceed {
+  event COMMAND(name)
+  event FAIL(name), SUCCESS(name)
+
+  always {
+    COMMAND(name : x) => RequireSuccess(cmdName : x)
+  }
+
+  RequireSuccess(cmdName) {
+    FAIL(name : #) => error
+    SUCCESS(name : cmdName) => ok
+  }
+}

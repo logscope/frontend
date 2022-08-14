@@ -1,0 +1,12 @@
+monitor M1a {
+  event command, succeed
+
+  Command {
+    command => Succeed, Command
+  }
+
+  hot Succeed {
+    succeed => ok
+    command => error
+  }
+}

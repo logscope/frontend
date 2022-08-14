@@ -1,0 +1,12 @@
+monitor M1 {
+  event command, succeed
+
+  init Command {
+    command => Succeed
+  }
+
+  hot Succeed {
+    succeed => Command
+    command => error
+  }
+}

@@ -1,0 +1,14 @@
+
+
+monitor NoDoubleStart {
+  event start(task), stop(task)
+
+  always {
+    start(task : s) => Started(taskNumber : s)
+    start(task : s) @ Started(taskNumber : s) => error
+  }
+
+  hot Started(taskNumber) {
+    stop(task : taskNumber) => ok
+  }
+}

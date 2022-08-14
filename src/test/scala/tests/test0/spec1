@@ -1,0 +1,260 @@
+
+// ---
+
+monitor M0_MonitorNameUsedMoreThanOnce {}
+monitor M0_MonitorNameUsedMoreThanOnce {}
+
+
+// ---
+
+monitor M1_StateNameUsedMoreThanOnce {
+  always {
+    open(name : x) => S1(file : x)
+  }
+
+  hot S1(file) {
+    close(name : file) => ok
+  }
+
+  hot S1(file) {
+    close(name : file) => error
+  }
+}
+
+
+// ---
+
+monitor M2_StateIsNeverActivated {
+  always {
+    open(name : x) => S1(file : x)
+  }
+
+  hot S1(file) {
+    close(name : file) => ok
+  }
+
+  hot S2(file) {
+    close(name : file) => ok
+  }
+}
+
+
+// ---
+
+monitor M3_InitIsDefinedOnParameterizedState1Of2 {
+  init always {
+    open(name : x) => S1(file : x)
+  }
+
+  hot S1(file) {
+    close(name : file) => ok
+  }
+
+  init S2(file) {
+    open(name : file) => error
+  }
+}
+
+monitor M4_InitIsDefinedOnParameterizedState2Of2 {
+  always Start(x) {
+    open(name : x) => S1(file : x)
+  }
+
+  hot S1(file) {
+    close(name : file) => ok
+  }
+}
+
+
+// ---
+
+monitor M5_ModifierOccursMoreThanOnce {
+  always always {
+    open(name : x) => S1(file : x)
+  }
+
+  hot S1(file) {
+    close(name : file) => ok
+  }
+}
+
+
+// ---
+
+monitor M6_IncompatibleModifiers {
+  init always hot {
+    open(name : x) => S1(file : x)
+  }
+
+  init always step {
+    open(name : x) => S2(file : x)
+  }
+
+  step next S1(file) {
+    close(name : file) => ok
+  }
+
+  step hot S2(file) {
+    close(name : file) => ok
+  }
+}
+
+// ---
+
+monitor M7_FormalParameterIdOccursMultipleTimes {
+  always {
+    open(name : x) => S1(file : x)
+  }
+
+  hot S1(file,file) {
+    close(name : file) => ok
+  }
+}
+
+// ---
+
+monitor M8_StateHasNoTransitionsAndIsNotUsedInATransitionCondition {
+  always {
+    open(name : x) => S1(file : x), S2(file : x)
+  }
+
+  hot S1(file) {
+    close(name : file) => ok
+  }
+
+  S2(file)
+}
+
+
+// ---
+
+monitor M9_UnusedFormalParameters {
+  always {
+    open(name1 : x, name2 : y) => S1(file1 : x, file2 : y)
+  }
+
+  hot S1(file1,file2) {
+    close(name : file1) => ok
+  }
+}
+
+// ---
+
+monitor M10_MoreThanOneOccurrenceOfOkError {
+  always {
+    open(name : x) => S1(file : x),error,error
+  }
+
+  hot S1(file) {
+    close(name : file) => ok,ok
+  }
+}
+
+
+// ---
+
+monitor M11_OkMustOccurAloneOnRHS {
+  always {
+    open(name : x) => S1(file : x),ok
+  }
+
+  hot S1(file) {
+    close(name : file) => ok
+  }
+}
+
+// ---
+
+monitor M12_ErrorIsNotAllowedOnLHS {
+  always {
+    open(name : x) => S1(file : x)
+  }
+
+  hot S1(file) {
+    close(name : file) @ error => ok
+  }
+}
+
+// ---
+
+monitor M13_OkIsNotAllowedOnLHS {
+  always {
+    ok @ open(name : x) => S1(file : x)
+  }
+
+  hot S1(file) {
+    close(name : file) => ok
+  }
+}
+
+
+// ---
+
+monitor M14_TargetStateNotDefined {
+  always {
+    open(name : x) => S1(file : x)
+  }
+}
+
+
+// ---
+
+monitor M15_ReferenceToUndefinedNamesInPattern {
+  always {
+    open(name : x) => S1(file : x)
+  }
+
+  hot S1(file) {
+    close(name : file) => S3(f : file, m : mode)
+  }
+
+  S3(f,m) {
+    write(file : f, mode : m) => error
+  }
+}
+
+// ---
+
+monitor M16_ParameterNamesDoNotMatchWithState {
+  always {
+    open(name1 : x, name2 : y) => S1(file1 : x, file2 : y)
+  }
+
+  hot S1(file1,file42) {
+    close(name1 : file1, name2 : file42) => ok
+  }
+}
+
+
+// ---
+
+monitor M17_ActualFieldNameOccursMultipleTimes {
+  always {
+    open(name1 : x, name2 : y) => S1(file : x, file : y)
+  }
+
+  hot S1(file) {
+    close(name : file) => ok
+  }
+}
+
+// ---
+
+monitor M18_okAndErrorCannotHaveArguments {
+  always {
+    open(name : x) => error(file : x)
+    close(name : y) => ok(file : y)
+  }
+}
+
+// ---
+
+monitor M19_StateNamesMustDifferFromEventNames {
+  always {
+    open(name : x) => open(file : x)
+  }
+
+  hot open(file) {
+    close(name : file) => ok
+  }
+}

@@ -1,0 +1,12 @@
+
+monitor StartNextStop {
+  event start(task), initialize(task), stop(task)
+
+  always {
+    start(task : s) => Started(taskNumber : s)
+  }
+
+  next Started(taskNumber) {
+    stop(task : taskNumber) => ok
+  }
+}

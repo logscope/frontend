@@ -1,0 +1,12 @@
+#!/bin/bash
+
+#
+# LogScope - a tool for checking event streams.
+#
+# To use, call (after making executable with: chmod +x logscope) as follows:
+#
+#   logscope <specFile1> ... <specFileN> 
+
+LOGSCOPEDIR=$(cd `dirname $0` && pwd)
+
+scala -cp $LOGSCOPEDIR/frontend.jar main.Main "$@"

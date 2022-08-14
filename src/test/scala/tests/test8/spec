@@ -1,0 +1,26 @@
+
+monitor M4 {
+  event command(cmd,nr,kind), cancel(cmd,nr), dispatch(cmd,nr),
+        fail(cmd,nr), succeed(cmd,nr), close(cmd,nr)
+
+  always {
+    command(cmd : c, nr : n, kind : "FSW") => Dispatch(dc : c, dn : n)
+  }
+
+  hot Dispatch(dc,dn) {
+    cancel(cmd : dc, nr : dn) => ok
+    dispatch(cmd : dc, nr : dn) => Succeed(sc : dc, sn : dn)
+  }
+
+  hot Succeed(sc,sn) {
+    succeed(cmd : sc, nr : sn) => Close(cc : sc, cn : sn)
+    command(cmd : sc, nr : _, kind : "FSW") => error
+    fail(cmd : sc, nr : sn) => error
+  }
+
+  hot Close(cc,cn) {
+    succeed(cmd : cc, nr : cn) => error
+    close(cmd : cc, nr : cn) => ok
+  }
+}
+

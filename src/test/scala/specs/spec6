@@ -1,0 +1,28 @@
+
+monitor CommandExecution {
+  event command(cmd,kind), cancel(cmd), dispatch(cmd),
+        fail(cmd), succeed(cmd), close(cmd)
+
+  always {
+    command(cmd : x, kind : "FSW") => Dispatch(dis : x)
+  }
+
+  hot Dispatch(dis) {
+    cancel(cmd : dis) => ok
+    dispatch(cmd : dis) => Succeed(suc : dis)
+  }
+
+  hot Succeed(suc) {
+    succeed(cmd : suc) => SucceedNoMore(nosuc : suc), Close(clo : suc)
+    fail(cmd : suc) => error
+  }
+
+  SucceedNoMore(nosuc) {
+    succeed(cmd : nosuc) => error
+  }
+
+  hot Close(clo) {
+    close(cmd : clo) => ok
+  }
+}
+

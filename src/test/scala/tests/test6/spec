@@ -1,0 +1,15 @@
+
+monitor M3 {
+  event command(cmd,kind), succeed(cmd)
+
+  always {
+    command(cmd : x, kind : "FSW") => Succeed(c : x)
+    succeed(cmd : x) @ !Succeed(c : x) => error
+  }
+
+  hot Succeed(c) {
+    succeed(cmd : c) => ok
+    command(cmd : c) => error
+  }
+}
+
